@@ -44,12 +44,35 @@
                 activeTab: 'home',
                 selectedPackage: null,
                 currentSection: 'web',
+                openFaq: 1,
                 chips: ['Todos', 'AR nacional', 'Inter', 'Moneda', 'Precio', 'Traslado', 'Tipo', 'Más filtros'],
                 categories: [
                     { id: 1, name: 'Costa Atlántica', subtitle: 'Sol y Arena', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80' },
                     { id: 2, name: 'Patagonia', subtitle: 'Paisajes épicos', img: 'https://travexa-catalogo.com/assets/tematica-patagonia-BEFSG3Zk.jpg' },
                     { id: 3, name: 'Cuyo', subtitle: 'Viñedos y montaña', img: 'https://travexa-catalogo.com/assets/tematica-cuyo-5tmiju3q.jpg' },
                     { id: 4, name: 'Norte Argentino', subtitle: 'Cultura y color', img: 'https://travexa-catalogo.com/assets/tematica-norte-DKK-g2nv.jpg' }
+                ],
+                trustMetrics: [
+                    { id: 1, label: 'Viajeros satisfechos', value: '+24.000' },
+                    { id: 2, label: 'Agencias y operadores aliados', value: '+180' },
+                    { id: 3, label: 'Destinos operados', value: '42 países' },
+                    { id: 4, label: 'Atención promedio', value: '< 3 min' }
+                ],
+                professionalServices: [
+                    { id: 1, icon: '🧳', title: 'Gestión integral de reservas', description: 'Vuelos, hoteles, traslados y actividades con seguimiento centralizado.' },
+                    { id: 2, icon: '🛡️', title: 'Asistencia y cobertura 24/7', description: 'Soporte en viaje, cambios operativos y asistencia médica internacional.' },
+                    { id: 3, icon: '🏢', title: 'Viajes corporativos', description: 'Políticas de empresa, aprobaciones, reportes de gastos y facturación unificada.' },
+                    { id: 4, icon: '📑', title: 'Documentación inteligente', description: 'Recordatorios de visados, vouchers digitales y condiciones claras por servicio.' }
+                ],
+                testimonials: [
+                    { id: 1, name: 'María P.', role: 'Travel Manager - Fintech BA', quote: 'Redujimos tiempos de gestión y logramos mayor control de presupuesto mensual.' },
+                    { id: 2, name: 'Lucas y Sofía', role: 'Viajeros frecuentes', quote: 'La experiencia fue impecable: respuestas rápidas, itinerario claro y cero sorpresas.' },
+                    { id: 3, name: 'Equipo HR Andina', role: 'Cliente corporativo', quote: 'El tablero de viajes nos ayudó a consolidar reservas y mejorar la trazabilidad.' }
+                ],
+                faqs: [
+                    { id: 1, q: '¿Cómo funciona el proceso de reserva?', a: 'Seleccionás el paquete, confirmamos disponibilidad en minutos y enviamos propuesta final con medios de pago.' },
+                    { id: 2, q: '¿Ofrecen factura y medios de pago corporativos?', a: 'Sí. Emitimos factura A/B, trabajamos con transferencias, tarjetas y acuerdos para cuentas empresa.' },
+                    { id: 3, q: '¿Puedo personalizar un itinerario?', a: 'Claro. Armamos viajes a medida según fechas, presupuesto, intereses y tipo de viajero.' }
                 ],
                 packages: [
                     { id: 101, title: 'Escapada a Mendoza Gourmet', destination: 'Mendoza, Argentina', badge: 'Escapadas', price: '599.000', heroImg: 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '3D/2N', date: '10 May', description: 'Vino, montaña y relax en una salida corta ideal para desconectar.', tags: [{ icon: '🍷', text: 'Bodegas' }, { icon: '🏨', text: 'Hotel 4*' }], includes: ['Aéreo', '2 noches', 'Desayuno', 'Visita a bodega'], itinerary: [{ day: 'Día 1', title: 'Llegada a Mendoza', desc: 'Check-in y paseo por la ciudad.' }, { day: 'Día 2', title: 'Ruta del vino', desc: 'Tour por bodegas con degustación.' }] },
@@ -154,6 +177,9 @@
                 goToList() {
                     this.selectedPackage = null;
                     window.scrollTo({ top: 0, behavior: 'smooth' });
+                },
+                toggleFaq(id) {
+                    this.openFaq = this.openFaq === id ? null : id;
                 }
             }
         }
@@ -247,6 +273,70 @@
                         </div>
                     </article>
                 </template>
+            </div>
+        </section>
+
+        <section class="max-w-[1400px] mx-auto px-4 md:px-8 pb-16">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <template x-for="item in trustMetrics" :key="item.id">
+                    <article class="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+                        <p class="text-2xl md:text-3xl font-black text-primary" x-text="item.value"></p>
+                        <p class="text-sm text-gray-500 mt-1" x-text="item.label"></p>
+                    </article>
+                </template>
+            </div>
+        </section>
+
+        <section class="max-w-[1400px] mx-auto px-4 md:px-8 pb-16">
+            <div class="flex items-end justify-between gap-6 mb-6">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.25em] text-primary font-bold mb-2">Soluciones profesionales</p>
+                    <h2 class="text-2xl md:text-3xl font-extrabold">Todo lo que necesita una plataforma de viajes moderna</h2>
+                </div>
+                <button class="hidden md:inline-flex bg-slate-900 text-white rounded-xl px-5 py-3 font-semibold hover:bg-slate-700 transition-colors">Solicitar demo</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <template x-for="service in professionalServices" :key="service.id">
+                    <article class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm">
+                        <div class="text-2xl mb-4" x-text="service.icon"></div>
+                        <h3 class="font-bold mb-2" x-text="service.title"></h3>
+                        <p class="text-sm text-gray-500" x-text="service.description"></p>
+                    </article>
+                </template>
+            </div>
+        </section>
+
+        <section class="max-w-[1400px] mx-auto px-4 md:px-8 pb-16">
+            <div class="bg-slate-900 text-white rounded-[2rem] p-8 md:p-12">
+                <p class="text-xs uppercase tracking-[0.2em] text-primary-light font-bold mb-2">Testimonios</p>
+                <h2 class="text-2xl md:text-3xl font-extrabold mb-8">Empresas y viajeros que ya confían en TRAVEL</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <template x-for="testimonial in testimonials" :key="testimonial.id">
+                        <article class="bg-white/10 rounded-2xl p-6 border border-white/10">
+                            <p class="text-sm text-white/90 mb-5" x-text="'“' + testimonial.quote + '”'"></p>
+                            <p class="font-bold" x-text="testimonial.name"></p>
+                            <p class="text-xs text-white/60" x-text="testimonial.role"></p>
+                        </article>
+                    </template>
+                </div>
+            </div>
+        </section>
+
+        <section class="max-w-[1100px] mx-auto px-4 md:px-8 pb-20">
+            <div class="bg-white rounded-3xl border border-gray-100 p-6 md:p-10">
+                <h2 class="text-2xl md:text-3xl font-extrabold mb-2">Preguntas frecuentes</h2>
+                <p class="text-gray-500 mb-8">Información clave para reservar con tranquilidad.</p>
+                <div class="space-y-3">
+                    <template x-for="faq in faqs" :key="faq.id">
+                        <article class="border border-gray-100 rounded-2xl overflow-hidden">
+                            <button @click="toggleFaq(faq.id)" class="w-full px-5 py-4 bg-slate-50 hover:bg-slate-100 transition-colors flex items-center justify-between text-left">
+                                <span class="font-semibold" x-text="faq.q"></span>
+                                <span class="text-primary font-black" x-text="openFaq === faq.id ? '−' : '+'"></span>
+                            </button>
+                            <div x-show="openFaq === faq.id" class="px-5 py-4 text-sm text-gray-600" x-text="faq.a"></div>
+                        </article>
+                    </template>
+                </div>
             </div>
         </section>
     </main>
