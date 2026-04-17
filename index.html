@@ -1,0 +1,503 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRAVEL - Plataforma de Viajes</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8faf9;
+            color: #1f2937;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        [x-cloak] { display: none !important; }
+    </style>
+
+    <script>
+        window.tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#009494',
+                            dark: '#007a7a',
+                            light: '#e6f4f4'
+                        },
+                        accent: '#ffb000'
+                    }
+                }
+            }
+        };
+
+        function travexaApp() {
+            return {
+                activeTab: 'home',
+                selectedPackage: null,
+                currentSection: 'web',
+                chips: ['Todos', 'AR nacional', 'Inter', 'Moneda', 'Precio', 'Traslado', 'Tipo', 'Más filtros'],
+                categories: [
+                    { id: 1, name: 'Costa Atlántica', subtitle: 'Sol y Arena', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80' },
+                    { id: 2, name: 'Patagonia', subtitle: 'Paisajes épicos', img: 'https://travexa-catalogo.com/assets/tematica-patagonia-BEFSG3Zk.jpg' },
+                    { id: 3, name: 'Cuyo', subtitle: 'Viñedos y montaña', img: 'https://travexa-catalogo.com/assets/tematica-cuyo-5tmiju3q.jpg' },
+                    { id: 4, name: 'Norte Argentino', subtitle: 'Cultura y color', img: 'https://travexa-catalogo.com/assets/tematica-norte-DKK-g2nv.jpg' }
+                ],
+                packages: [
+                    { id: 101, title: 'Escapada a Mendoza Gourmet', destination: 'Mendoza, Argentina', badge: 'Escapadas', price: '599.000', heroImg: 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '3D/2N', date: '10 May', description: 'Vino, montaña y relax en una salida corta ideal para desconectar.', tags: [{ icon: '🍷', text: 'Bodegas' }, { icon: '🏨', text: 'Hotel 4*' }], includes: ['Aéreo', '2 noches', 'Desayuno', 'Visita a bodega'], itinerary: [{ day: 'Día 1', title: 'Llegada a Mendoza', desc: 'Check-in y paseo por la ciudad.' }, { day: 'Día 2', title: 'Ruta del vino', desc: 'Tour por bodegas con degustación.' }] },
+                    { id: 102, title: 'Bariloche en Familia', destination: 'Bariloche, Río Negro', badge: 'Familia', price: '1.120.000', heroImg: 'https://images.unsplash.com/photo-1590502593747-42a996133562?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '5D/4N', date: '18 Jul', description: 'Plan familiar con actividades para grandes y chicos frente al lago.', tags: [{ icon: '👨‍👩‍👧‍👦', text: 'Kids Friendly' }, { icon: '🚌', text: 'Traslados' }], includes: ['Aéreo', '4 noches', 'Desayuno', 'Circuito Chico'], itinerary: [{ day: 'Día 1', title: 'Bienvenida', desc: 'Traslado y tarde libre.' }, { day: 'Día 2', title: 'Excursión familiar', desc: 'Circuito panorámico guiado.' }] },
+                    { id: 103, title: 'Aventura en Salta y Jujuy', destination: 'Norte Argentino', badge: 'Aventura', price: '874.500', heroImg: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '6D/5N', date: '02 Jun', description: 'Paisajes únicos, trekking suave y cultura andina en un solo viaje.', tags: [{ icon: '🥾', text: 'Trekking' }, { icon: '📸', text: 'Paisajes' }], includes: ['Bus semi-cama', '5 noches', 'Desayuno', 'Quebrada de Humahuaca'], itinerary: [{ day: 'Día 1', title: 'Salta capital', desc: 'Recorrido histórico.' }, { day: 'Día 2', title: 'Jujuy', desc: 'Visita al Cerro de los 7 Colores.' }] },
+                    { id: 104, title: 'Crucero por el Caribe Sur', destination: 'Caribe', badge: 'Cruceros', price: '2.490.000', heroImg: 'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '8D/7N', date: '22 Sep', description: 'Navegación premium con escalas en playas paradisíacas.', tags: [{ icon: '🛳️', text: 'All Inclusive' }, { icon: '🏝️', text: 'Islas' }], includes: ['Cabina externa', 'Pensión completa', 'Shows', 'Tasas portuarias'], itinerary: [{ day: 'Día 1', title: 'Embarque', desc: 'Check-in y salida del puerto.' }, { day: 'Día 2', title: 'Navegación', desc: 'Día de actividades a bordo.' }] },
+                    { id: 105, title: 'Semana de Nieve en Chapelco', destination: 'San Martín de los Andes', badge: 'Nieve', price: '1.760.000', heroImg: 'https://images.unsplash.com/photo-1483664852095-d6cc6870702d?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '7D/6N', date: '08 Aug', description: 'Ideal para amantes del ski y snowboard en plena temporada.', tags: [{ icon: '⛷️', text: 'Ski Pass' }, { icon: '🏔️', text: 'Montaña' }], includes: ['Aéreo', '6 noches', 'Desayuno', 'Ski pass 3 días'], itinerary: [{ day: 'Día 1', title: 'Arribo', desc: 'Instalación en hotel base.' }, { day: 'Día 2', title: 'Día de pistas', desc: 'Jornada completa en Cerro Chapelco.' }] },
+                    { id: 106, title: 'Relax en Mar del Plata', destination: 'Mar del Plata, Buenos Aires', badge: 'Playa', price: '468.000', heroImg: 'https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '4D/3N', date: '14 Dec', description: 'Escapada frente al mar con hotel céntrico y servicios incluidos.', tags: [{ icon: '🌊', text: 'Costa' }, { icon: '🏖️', text: 'Balneario' }], includes: ['Bus cama', '3 noches', 'Desayuno', 'Seguro médico'], itinerary: [{ day: 'Día 1', title: 'Salida nocturna', desc: 'Viaje desde Buenos Aires.' }, { day: 'Día 2', title: 'Playa', desc: 'Día libre para disfrutar el mar.' }] },
+                    { id: 107, title: 'City Break Santiago', destination: 'Santiago de Chile', badge: 'Ciudad', price: '932.000', heroImg: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '4D/3N', date: '26 May', description: 'Compras, gastronomía y miradores en una ciudad vibrante.', tags: [{ icon: '🏙️', text: 'Urbano' }, { icon: '🛍️', text: 'Shopping' }], includes: ['Aéreo', '3 noches', 'Desayuno', 'City tour'], itinerary: [{ day: 'Día 1', title: 'Centro histórico', desc: 'Recorrido guiado por la ciudad.' }, { day: 'Día 2', title: 'Sky Costanera', desc: 'Tarde de vistas panorámicas.' }] },
+                    { id: 108, title: 'Luna de Miel en Río', destination: 'Río de Janeiro, Brasil', badge: 'Luna de miel', price: '1.980.000', heroImg: 'https://images.unsplash.com/photo-1483721310020-03333e577078?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '6D/5N', date: '04 Nov', description: 'Romance, playa y experiencias exclusivas para dos.', tags: [{ icon: '💍', text: 'Parejas' }, { icon: '🍾', text: 'Amenity especial' }], includes: ['Aéreo', '5 noches', 'Desayuno', 'Cena romántica'], itinerary: [{ day: 'Día 1', title: 'Llegada a Copacabana', desc: 'Recepción con traslado privado.' }, { day: 'Día 2', title: 'Cristo Redentor', desc: 'Excursión en pareja.' }] },
+                    { id: 109, title: 'Festival de la Vendimia', destination: 'Mendoza, Argentina', badge: 'Eventos', price: '1.150.000', heroImg: 'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '4D/3N', date: '01 Mar', description: 'Viví el evento más importante del vino argentino con entradas incluidas.', tags: [{ icon: '🎉', text: 'Entradas' }, { icon: '🍇', text: 'Vendimia' }], includes: ['Aéreo', '3 noches', 'Traslados', 'Entrada al evento'], itinerary: [{ day: 'Día 1', title: 'Recepción', desc: 'Check-in y briefing del evento.' }, { day: 'Día 2', title: 'Acto central', desc: 'Participación en festejos oficiales.' }] },
+                    { id: 110, title: 'Termas y Bienestar', destination: 'Federación, Entre Ríos', badge: 'Senior', price: '525.000', heroImg: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '5D/4N', date: '11 Jun', description: 'Programa de descanso y bienestar pensado para viajeros senior.', tags: [{ icon: '♨️', text: 'Termas' }, { icon: '🩺', text: 'Asistencia' }], includes: ['Bus ejecutivo', '4 noches', 'Media pensión', 'Asistencia al viajero'], itinerary: [{ day: 'Día 1', title: 'Llegada', desc: 'Ingreso al complejo termal.' }, { day: 'Día 2', title: 'Día wellness', desc: 'Circuito de aguas y descanso.' }] },
+                    { id: 111, title: 'Cataratas Premium', destination: 'Puerto Iguazú, Misiones', badge: 'Aventura', price: '1.045.000', heroImg: 'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '5D/4N', date: '19 Apr', description: 'Conocé las Cataratas con excursiones en ambos lados de la frontera.', tags: [{ icon: '🌿', text: 'Naturaleza' }, { icon: '🚤', text: 'Gran Aventura' }], includes: ['Aéreo', '4 noches', 'Desayuno', 'Parque Nacional'], itinerary: [{ day: 'Día 1', title: 'Llegada', desc: 'Transfer y acomodación.' }, { day: 'Día 2', title: 'Lado argentino', desc: 'Circuito superior e inferior.' }] },
+                    { id: 112, title: 'Escapada Urbana a Buenos Aires', destination: 'Buenos Aires, Argentina', badge: 'Ciudad', price: '398.000', heroImg: 'https://images.unsplash.com/photo-1583422409516-2895a77efded?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '3D/2N', date: '06 May', description: 'Historia, tango y gastronomía en la capital argentina.', tags: [{ icon: '🎭', text: 'Cultura' }, { icon: '🍽️', text: 'Gastronomía' }], includes: ['2 noches', 'Desayuno', 'City tour', 'Show de tango'], itinerary: [{ day: 'Día 1', title: 'Centro porteño', desc: 'Tour por avenidas emblemáticas.' }, { day: 'Día 2', title: 'San Telmo y La Boca', desc: 'Recorrido cultural y cena show.' }] },
+                    { id: 113, title: 'Vacaciones en Punta Cana', destination: 'Punta Cana, República Dominicana', badge: 'Playa', price: '2.860.000', heroImg: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '8D/7N', date: '13 Jan', description: 'Resort all inclusive para disfrutar playas turquesas sin preocupaciones.', tags: [{ icon: '🍹', text: 'All Inclusive' }, { icon: '☀️', text: 'Caribe' }], includes: ['Aéreo', '7 noches', 'All inclusive', 'Traslados'], itinerary: [{ day: 'Día 1', title: 'Vuelo internacional', desc: 'Llegada y check-in en resort.' }, { day: 'Día 2', title: 'Día libre', desc: 'Playa y actividades del hotel.' }] },
+                    { id: 114, title: 'Aventura Patagónica', destination: 'El Chaltén, Santa Cruz', badge: 'Aventura', price: '1.310.000', heroImg: 'https://images.unsplash.com/photo-1482192597420-481470453a63?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '6D/5N', date: '23 Oct', description: 'Senderos de montaña para viajeros activos con guía especializado.', tags: [{ icon: '🏞️', text: 'Trekking' }, { icon: '🧭', text: 'Guía' }], includes: ['Aéreo', '5 noches', 'Viandas', 'Excursiones'], itinerary: [{ day: 'Día 1', title: 'Recepción', desc: 'Charla técnica y equipo.' }, { day: 'Día 2', title: 'Laguna de los Tres', desc: 'Trekking de jornada completa.' }] },
+                    { id: 115, title: 'Mini Crucero por el Río de la Plata', destination: 'Buenos Aires - Montevideo', badge: 'Cruceros', price: '799.000', heroImg: 'https://images.unsplash.com/photo-1565084888279-aca607ecce0c?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '4D/3N', date: '30 Jun', description: 'Una experiencia corta de crucero con entretenimiento a bordo.', tags: [{ icon: '🛳️', text: 'Crucero' }, { icon: '🎶', text: 'Shows' }], includes: ['Cabina interna', 'Pensión completa', 'Tasas'], itinerary: [{ day: 'Día 1', title: 'Embarque', desc: 'Salida desde terminal fluvial.' }, { day: 'Día 2', title: 'Montevideo', desc: 'Tiempo libre en la ciudad.' }] },
+                    { id: 116, title: 'Nieve y Spa en Bariloche', destination: 'Bariloche, Río Negro', badge: 'Nieve', price: '1.540.000', heroImg: 'https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '5D/4N', date: '02 Aug', description: 'Combinación ideal de deporte invernal y relax en spa de montaña.', tags: [{ icon: '❄️', text: 'Invierno' }, { icon: '🧖', text: 'Spa' }], includes: ['Aéreo', '4 noches', 'Desayuno', 'Ski day'], itinerary: [{ day: 'Día 1', title: 'Arribo', desc: 'Traslado al hotel con spa.' }, { day: 'Día 2', title: 'Cerro Catedral', desc: 'Jornada de nieve.' }] },
+                    { id: 117, title: 'Escapada Romántica en Colonia', destination: 'Colonia del Sacramento, Uruguay', badge: 'Luna de miel', price: '684.000', heroImg: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '3D/2N', date: '17 Sep', description: 'Un destino colonial encantador para disfrutar en pareja.', tags: [{ icon: '❤️', text: 'Romántico' }, { icon: '⛴️', text: 'Ferry' }], includes: ['Ferry ida y vuelta', '2 noches', 'Desayuno', 'Cena gourmet'], itinerary: [{ day: 'Día 1', title: 'Cruce', desc: 'Salida en ferry y check-in.' }, { day: 'Día 2', title: 'Casco histórico', desc: 'Paseo guiado al atardecer.' }] },
+                    { id: 118, title: 'Vacaciones Familiares en Florianópolis', destination: 'Florianópolis, Brasil', badge: 'Familia', price: '1.690.000', heroImg: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '7D/6N', date: '09 Feb', description: 'Playas tranquilas y actividades para toda la familia.', tags: [{ icon: '👨‍👩‍👧', text: 'Familiar' }, { icon: '🏖️', text: 'Playa' }], includes: ['Aéreo', '6 noches', 'Desayuno', 'Asistencia médica'], itinerary: [{ day: 'Día 1', title: 'Llegada', desc: 'Transfer al hotel.' }, { day: 'Día 2', title: 'Día de playa', desc: 'Actividades recreativas.' }] },
+                    { id: 119, title: 'Escapada Cultural a Córdoba', destination: 'Córdoba, Argentina', badge: 'Escapadas', price: '455.000', heroImg: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '3D/2N', date: '28 Apr', description: 'Historia jesuítica, sierras y gastronomía local en pocos días.', tags: [{ icon: '⛪', text: 'Patrimonio' }, { icon: '🚌', text: 'Excursión' }], includes: ['Bus', '2 noches', 'Desayuno', 'Tour guiado'], itinerary: [{ day: 'Día 1', title: 'Centro histórico', desc: 'Visita guiada por la ciudad.' }, { day: 'Día 2', title: 'Sierras chicas', desc: 'Excursión de media jornada.' }] },
+                    { id: 120, title: 'Turismo Senior en Merlo', destination: 'Merlo, San Luis', badge: 'Senior', price: '512.000', heroImg: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=900&q=80', agency: 'TRAVEL', duration: '5D/4N', date: '12 Oct', description: 'Programa tranquilo con actividades suaves y acompañamiento permanente.', tags: [{ icon: '🌄', text: 'Sierras' }, { icon: '🧓', text: 'Senior' }], includes: ['Bus ejecutivo', '4 noches', 'Pensión completa', 'Coordinador'], itinerary: [{ day: 'Día 1', title: 'Salida', desc: 'Viaje y recepción en hotel.' }, { day: 'Día 2', title: 'Paseos serranos', desc: 'Recorrido panorámico relajado.' }] }
+                ],
+                data: {
+                    web: {
+                        id: 1,
+                        title: 'Presencia Web Profesional',
+                        icon: '🌐',
+                        description: 'En el sector turístico, la confianza lo es todo. Desarrollamos un sitio web que no solo sirve como vidriera, sino como una herramienta de venta activa.',
+                        investment: '$150.000',
+                        investmentLabel: 'Inversión única',
+                        points: [
+                            { t: 'Diseño a medida', d: 'Estética moderna, limpia y adaptada a dispositivos móviles.' },
+                            { t: 'Optimización de Conversión', d: 'Botones de contacto claros y secciones de destinos destacadas.' },
+                            { t: 'Autogestión', d: 'Estructura pensada para que la carga de paquetes sea ágil.' }
+                        ]
+                    },
+                    social: {
+                        id: 2,
+                        title: 'Gestión de Redes Sociales',
+                        icon: '📱',
+                        description: 'No se trata solo de “estar”, sino de destacar. El servicio se divide en una puesta a punto estética y un plan mensual.',
+                        setup: {
+                            title: 'Etapa 1: Setup de Identidad',
+                            items: [
+                                'Optimización de seguridad en IG/FB',
+                                'Diseño de perfil y portada coherente',
+                                '4 Portadas para Historias Destacadas',
+                                'Copywriting persuasivo en biografía'
+                            ]
+                        },
+                        packs: [
+                            { name: 'Pack x3', desc: '3 posts + 3 historias (Básico)', price: '$80.000' },
+                            { name: 'Pack x6', desc: '6 posts + 6 historias (Activo)', price: '$140.000' },
+                            { name: 'Pack x9', desc: '9 posts + 9 historias (Máximo)', price: '$200.000' }
+                        ]
+                    },
+                    ads: {
+                        id: 3,
+                        title: 'Campañas Meta Ads',
+                        icon: '🚀',
+                        description: 'Para dejar de esperar que los clientes lleguen solos y salir a buscarlos con precisión quirúrgica.',
+                        details: [
+                            { t: 'Segmentación', d: 'Intereses reales en viajes y capacidad de compra.' },
+                            { t: 'Creatividad', d: 'Piezas diseñadas para detener el scroll.' },
+                            { t: 'Transparencia', d: 'Reporte mensual de alcance y consultas.' }
+                        ],
+                        plans: [
+                            { name: 'Plan 1 Pieza Gráfica', price: '$100.000 / mes' },
+                            { name: 'Plan 2 Piezas Gráficas', price: '$120.000 / mes' }
+                        ],
+                        note: 'El costo es por gestión y diseño. El pago a Meta se define según alcance deseado.'
+                    },
+                    wa: {
+                        id: 4,
+                        title: 'Asistente Virtual WhatsApp',
+                        icon: '🤖',
+                        description: 'Transformamos tu WhatsApp en una verdadera central de reservas para no perder ninguna consulta.',
+                        features: [
+                            'Automatización con IA (24/7)',
+                            'Gestión de Prospectos por etiquetas',
+                            'Embudo de ventas visual',
+                            'API Oficial (Sin riesgo de bloqueo)',
+                            'Bandeja de entrada multicanal para equipos'
+                        ],
+                        plans: [
+                            { name: 'Suscripción Mensual', price: '$50.000' },
+                            { name: 'Bonificación Anual', price: '$450.000', badge: '9 meses x 12' }
+                        ]
+                    }
+                },
+                setTab(tab) {
+                    this.activeTab = tab;
+                    if (tab !== 'individual') this.selectedPackage = null;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                },
+                goToDetail(pkg) {
+                    this.selectedPackage = pkg;
+                    this.activeTab = 'individual';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                },
+                goToList() {
+                    this.selectedPackage = null;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+        }
+    </script>
+
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+
+<body x-data="travexaApp()" class="antialiased selection:bg-primary selection:text-white">
+    <header class="bg-white/95 backdrop-blur-sm sticky top-0 z-50 border-b border-gray-100 shadow-sm">
+        <div class="max-w-[1400px] mx-auto px-4 md:px-8 py-3 flex items-center justify-between">
+            <button @click="setTab('home')" class="text-3xl font-extrabold text-primary flex items-center gap-2">
+                X <span class="text-sm font-medium text-gray-500 hidden sm:block mt-1">TRAVEL</span>
+            </button>
+
+            <nav class="hidden md:flex gap-6 text-sm font-semibold text-gray-600">
+                <a href="#" @click.prevent="setTab('home')" class="pb-1 border-b-2 transition-colors" :class="activeTab === 'home' ? 'text-primary border-primary' : 'border-transparent hover:text-primary'">Home</a>
+                <a href="#" @click.prevent="setTab('individual')" class="pb-1 border-b-2 transition-colors" :class="activeTab === 'individual' ? 'text-primary border-primary' : 'border-transparent hover:text-primary'">Individual</a>
+                <a href="#" @click.prevent="setTab('presupuesto')" class="pb-1 border-b-2 transition-colors" :class="activeTab === 'presupuesto' ? 'text-primary border-primary' : 'border-transparent hover:text-primary'">Presupuesto</a>
+            </nav>
+
+            <button class="bg-primary text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-primary-dark transition-colors">
+                Entrar
+            </button>
+        </div>
+    </header>
+
+    <main x-show="activeTab === 'home'" x-cloak>
+        <section class="max-w-[1400px] mx-auto px-4 md:px-8 pt-8 md:pt-12 pb-6">
+            <div class="relative rounded-[2.5rem] overflow-hidden bg-gray-900 min-h-[360px] md:min-h-[430px] px-6 md:px-12 py-10 md:py-14 grid md:grid-cols-2 gap-8 items-center">
+                <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=1600&q=80" class="absolute inset-0 w-full h-full object-cover opacity-35" alt="Hero viajes">
+                <div class="absolute inset-0 bg-gradient-to-r from-slate-900/85 via-slate-900/60 to-slate-900/40"></div>
+
+                <div class="relative z-10 text-white max-w-xl">
+                    <p class="text-xs uppercase tracking-[0.25em] text-primary-light font-bold mb-4">Experiencias diseñadas</p>
+                    <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4">Descubrí tu próximo viaje por Argentina</h1>
+                    <p class="text-white/85 text-base md:text-lg mb-8">Elegí paquetes curados por especialistas, con salidas confirmadas y asesoría personalizada.</p>
+                    <div class="flex flex-wrap gap-3">
+                        <button class="bg-primary text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-primary/25 hover:bg-primary-dark transition-colors">Explorar ofertas</button>
+                        <button class="bg-white/15 border border-white/25 text-white px-8 py-3 rounded-2xl font-bold hover:bg-white/25 transition-colors">Hablar con asesor</button>
+                    </div>
+                </div>
+
+                <div class="relative z-10 hidden md:grid grid-cols-2 gap-4">
+                    <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=600&q=80" class="rounded-3xl h-40 w-full object-cover">
+                    <img src="https://images.unsplash.com/photo-1517760444937-f6397edcbbcd?auto=format&fit=crop&w=600&q=80" class="rounded-3xl h-40 w-full object-cover mt-8">
+                    <div class="col-span-2 bg-white/90 rounded-3xl p-5 text-slate-700">
+                        <p class="text-xs font-bold uppercase tracking-widest text-primary mb-1">+1500 viajeros este mes</p>
+                        <p class="font-semibold">Reservá en minutos y recibí confirmación por WhatsApp.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="max-w-[1400px] mx-auto px-4 md:px-8">
+            <div class="glass-panel rounded-3xl p-4 md:p-6 shadow-sm">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4 items-center">
+                    <label class="bg-white rounded-2xl px-4 py-3 border border-gray-100">
+                        <span class="text-[11px] text-gray-400 font-bold uppercase">Origen</span>
+                        <input type="text" value="Buenos Aires" class="w-full text-sm font-semibold outline-none">
+                    </label>
+                    <label class="bg-white rounded-2xl px-4 py-3 border border-gray-100">
+                        <span class="text-[11px] text-gray-400 font-bold uppercase">Destino</span>
+                        <input type="text" value="El Calafate" class="w-full text-sm font-semibold outline-none">
+                    </label>
+                    <label class="bg-white rounded-2xl px-4 py-3 border border-gray-100">
+                        <span class="text-[11px] text-gray-400 font-bold uppercase">Fecha</span>
+                        <input type="text" value="15 Jul - 20 Jul" class="w-full text-sm font-semibold outline-none">
+                    </label>
+                    <button class="bg-primary hover:bg-primary-dark transition-colors text-white font-bold rounded-2xl px-6 py-4 w-full">Buscar</button>
+                </div>
+            </div>
+
+            <div class="flex gap-2 overflow-x-auto py-6">
+                <template x-for="(chip, i) in chips" :key="chip">
+                    <button class="whitespace-nowrap px-4 py-2 rounded-full text-sm border transition-colors" :class="i === 0 ? 'bg-primary text-white border-primary' : 'bg-white text-gray-600 border-gray-200 hover:border-primary hover:text-primary'" x-text="chip"></button>
+                </template>
+            </div>
+        </section>
+
+        <section class="max-w-[1400px] mx-auto px-4 md:px-8 pb-16">
+            <h2 class="text-2xl md:text-3xl font-extrabold mb-6">Tipos de viaje</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <template x-for="cat in categories" :key="cat.id">
+                    <article class="relative rounded-3xl h-56 overflow-hidden group cursor-pointer">
+                        <img :src="cat.img" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                        <div class="absolute bottom-0 p-5">
+                            <p class="text-white/80 text-xs uppercase tracking-widest font-semibold" x-text="cat.subtitle"></p>
+                            <h3 class="text-white text-xl font-black" x-text="cat.name"></h3>
+                        </div>
+                    </article>
+                </template>
+            </div>
+        </section>
+    </main>
+
+    <main x-show="activeTab === 'individual'" x-cloak>
+        <section x-show="!selectedPackage" x-cloak class="max-w-[1200px] mx-auto px-4 py-12">
+            <h2 class="text-2xl font-bold mb-8">Paquetes destacados</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <template x-for="pkg in packages" :key="pkg.id">
+                    <div @click="goToDetail(pkg)" class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer border border-gray-100 group">
+                        <div class="relative h-48 overflow-hidden">
+                            <img :src="pkg.heroImg" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold" x-text="pkg.duration"></div>
+                        </div>
+                        <div class="p-6">
+                            <span class="text-[10px] text-primary font-bold uppercase tracking-wider" x-text="pkg.badge"></span>
+                            <h3 class="text-xl font-bold mt-1 mb-4" x-text="pkg.title"></h3>
+                            <div class="flex justify-between items-end border-t pt-4">
+                                <div>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase">Desde</p>
+                                    <p class="text-xl font-black text-primary">ARS $<span x-text="pkg.price"></span></p>
+                                </div>
+                                <span class="text-primary font-bold text-sm">Ver más →</span>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </section>
+
+        <section x-show="selectedPackage" x-cloak>
+            <template x-if="selectedPackage">
+                <div class="max-w-[1200px] mx-auto px-4 pt-8 pb-20">
+                    <button @click="goToList()" class="flex items-center gap-2 text-gray-500 hover:text-primary mb-6 transition-colors">
+                        ← Volver a paquetes
+                    </button>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                        <div class="lg:col-span-2">
+                            <div class="rounded-3xl overflow-hidden h-[400px] mb-8">
+                                <img :src="selectedPackage.heroImg" class="w-full h-full object-cover">
+                            </div>
+                            <h1 class="text-4xl font-extrabold mb-4" x-text="selectedPackage.title"></h1>
+                            <div class="flex gap-4 mb-8" x-show="selectedPackage?.tags?.length">
+                                <template x-for="tag in selectedPackage.tags" :key="`${selectedPackage.id}-${tag.text}`">
+                                    <span class="bg-primary/10 text-primary px-3 py-1 rounded-lg text-xs font-bold" x-text="tag.icon + ' ' + tag.text"></span>
+                                </template>
+                            </div>
+                            <p class="text-lg text-gray-600 mb-10" x-text="selectedPackage.description"></p>
+                            <div class="mb-10" x-show="selectedPackage?.includes?.length">
+                                <h3 class="text-xl font-bold mb-4">Incluye</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    <template x-for="item in selectedPackage.includes" :key="`${selectedPackage.id}-${item}`">
+                                        <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-lg text-xs font-semibold" x-text="item"></span>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-3xl p-8 border border-gray-100" x-show="selectedPackage?.itinerary?.length">
+                                <h3 class="text-xl font-bold mb-6">Itinerario</h3>
+                                <div class="space-y-6">
+                                    <template x-for="day in selectedPackage.itinerary" :key="`${selectedPackage.id}-${day.day}`">
+                                        <div class="flex gap-4">
+                                            <div class="font-bold text-primary" x-text="day.day"></div>
+                                            <div>
+                                                <div class="font-bold" x-text="day.title"></div>
+                                                <div class="text-gray-500 text-sm" x-text="day.desc"></div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative">
+                            <div class="sticky top-28 bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
+                                <p class="text-sm text-gray-500 font-bold uppercase mb-1">Precio Final</p>
+                                <p class="text-3xl font-black text-primary mb-6">ARS $<span x-text="selectedPackage.price"></span></p>
+
+                                <button class="w-full bg-accent text-white py-4 rounded-2xl font-black mb-4 shadow-lg shadow-accent/20">RESERVAR AHORA</button>
+                                <button class="w-full border-2 border-primary text-primary py-3 rounded-2xl font-bold">Consultar dudas</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </section>
+    </main>
+
+    <main x-show="activeTab === 'presupuesto'" x-cloak class="max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-12">
+        <div class="mb-12">
+            <p class="text-xs uppercase tracking-[0.2em] text-primary font-bold mb-3">Presupuesto TRAVEL Digital</p>
+            <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-3">Propuesta Estratégica</h2>
+            <p class="text-slate-500 max-w-2xl text-lg">Inversión detallada para profesionalizar y escalar una agencia de viajes con enfoque comercial.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <aside class="lg:col-span-3 space-y-2">
+                <template x-for="(section, key) in data" :key="key">
+                    <button
+                        @click="currentSection = key"
+                        :class="currentSection === key ? 'bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02] border-primary' : 'bg-white text-slate-500 hover:bg-slate-50 border-slate-100'"
+                        class="w-full flex items-center gap-4 p-4 rounded-2xl transition-all duration-200 text-left border"
+                    >
+                        <span class="text-2xl" x-text="section.icon"></span>
+                        <div class="overflow-hidden">
+                            <p class="text-[10px] font-black uppercase opacity-60" x-text="'Módulo 0' + section.id"></p>
+                            <p class="font-bold truncate" x-text="section.title"></p>
+                        </div>
+                    </button>
+                </template>
+
+                <div class="mt-8 p-6 rounded-3xl bg-slate-900 text-white shadow-xl relative overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 rounded-full blur-2xl"></div>
+                    <h4 class="text-xs font-black text-primary-light uppercase tracking-widest mb-4">Resumen de Pago</h4>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Inversión Inicial</p>
+                            <p class="text-sm font-medium">Web + Setup Redes</p>
+                            <p class="text-xs text-slate-500 italic mt-1">(Se abona al comenzar)</p>
+                        </div>
+                        <div class="pt-4 border-t border-white/10">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Inversión Mensual</p>
+                            <p class="text-sm font-medium">Gestión y Plataforma</p>
+                            <p class="text-xs text-slate-500 italic mt-1">(Del 1 al 5 de cada mes)</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="lg:col-span-9">
+                <div class="bg-white rounded-[2.5rem] border border-slate-200 p-6 md:p-12 shadow-sm min-h-[600px]">
+                    <div x-show="currentSection === 'web'" x-cloak x-transition.opacity>
+                        <div class="flex flex-col md:flex-row justify-between items-start gap-6 mb-12">
+                            <div class="max-w-xl">
+                                <h3 class="text-4xl font-black text-slate-900 mb-6 leading-tight" x-text="data.web.title"></h3>
+                                <p class="text-slate-500 text-lg leading-relaxed" x-text="data.web.description"></p>
+                            </div>
+                            <div class="bg-primary/5 p-6 rounded-3xl border border-primary/10 text-center min-w-[200px]">
+                                <p class="text-xs font-bold text-primary uppercase mb-1" x-text="data.web.investmentLabel"></p>
+                                <p class="text-3xl font-black text-primary" x-text="data.web.investment"></p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <template x-for="point in data.web.points" :key="point.t">
+                                <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100">
+                                    <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm mb-4">
+                                        <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                    </div>
+                                    <h4 class="font-bold text-slate-900 mb-2" x-text="point.t"></h4>
+                                    <p class="text-sm text-slate-500" x-text="point.d"></p>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div x-show="currentSection === 'social'" x-cloak x-transition.opacity>
+                        <h3 class="text-4xl font-black text-slate-900 mb-6" x-text="data.social.title"></h3>
+                        <p class="text-slate-500 text-lg mb-10" x-text="data.social.description"></p>
+
+                        <div class="bg-primary rounded-3xl p-8 text-white mb-10 relative overflow-hidden">
+                            <h4 class="text-xl font-bold mb-6 flex items-center gap-2">
+                                <span class="bg-white/20 p-1 rounded">✨</span>
+                                <span x-text="data.social.setup.title"></span>
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <template x-for="item in data.social.setup.items" :key="item">
+                                    <div class="flex items-center gap-3 text-sm font-medium">
+                                        <div class="w-1.5 h-1.5 bg-accent rounded-full"></div>
+                                        <span x-text="item"></span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <h4 class="font-black text-slate-400 text-xs uppercase tracking-widest mb-6">Etapa 2: Packs Mensuales</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <template x-for="pack in data.social.packs" :key="pack.name">
+                                <div class="p-6 rounded-3xl border border-slate-100 bg-white hover:border-primary transition-colors group">
+                                    <p class="font-black text-primary mb-2" x-text="pack.name"></p>
+                                    <p class="text-xs text-slate-400 mb-6" x-text="pack.desc"></p>
+                                    <p class="text-2xl font-black text-slate-900" x-text="pack.price"></p>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div x-show="currentSection === 'ads'" x-cloak x-transition.opacity>
+                        <h3 class="text-4xl font-black text-slate-900 mb-6" x-text="data.ads.title"></h3>
+                        <p class="text-slate-500 text-lg mb-12" x-text="data.ads.description"></p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            <div class="space-y-8">
+                                <template x-for="detail in data.ads.details" :key="detail.t">
+                                    <div class="flex gap-4">
+                                        <div class="text-2xl">🎯</div>
+                                        <div>
+                                            <h4 class="font-bold text-slate-900" x-text="detail.t"></h4>
+                                            <p class="text-sm text-slate-500" x-text="detail.d"></p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100">
+                                <h4 class="font-black text-xs uppercase text-slate-400 mb-6 tracking-widest">Planes Disponibles</h4>
+                                <div class="space-y-4 mb-6">
+                                    <template x-for="plan in data.ads.plans" :key="plan.name">
+                                        <div class="flex justify-between items-center bg-white p-4 rounded-xl border border-slate-100">
+                                            <span class="text-sm font-bold" x-text="plan.name"></span>
+                                            <span class="text-primary font-black" x-text="plan.price"></span>
+                                        </div>
+                                    </template>
+                                </div>
+                                <p class="text-[10px] text-slate-400 italic" x-text="'* ' + data.ads.note"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div x-show="currentSection === 'wa'" x-cloak x-transition.opacity>
+                        <h3 class="text-4xl font-black text-slate-900 mb-6" x-text="data.wa.title"></h3>
+                        <p class="text-slate-500 text-lg mb-10" x-text="data.wa.description"></p>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div class="bg-slate-900 rounded-3xl p-8 text-white">
+                                <h4 class="text-accent font-black text-[10px] uppercase mb-6 tracking-widest">Funcionalidades Clave</h4>
+                                <div class="space-y-4">
+                                    <template x-for="feat in data.wa.features" :key="feat">
+                                        <div class="flex items-center gap-3 text-sm">
+                                            <div class="w-2 h-2 bg-primary rounded-full"></div>
+                                            <span x-text="feat"></span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <template x-for="plan in data.wa.plans" :key="plan.name">
+                                    <div class="p-8 rounded-3xl border border-slate-100 flex flex-col justify-center relative overflow-hidden hover:border-primary transition-all">
+                                        <template x-if="plan.badge">
+                                            <span class="absolute top-4 right-4 bg-accent text-white text-[10px] font-black px-2 py-1 rounded-full" x-text="plan.badge"></span>
+                                        </template>
+                                        <p class="text-slate-400 text-xs font-bold uppercase mb-1" x-text="plan.name"></p>
+                                        <p class="text-3xl font-black text-slate-900" x-text="plan.price"></p>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</body>
+</html>
